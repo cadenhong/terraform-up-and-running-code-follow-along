@@ -9,8 +9,8 @@ CONFIGURING A REMOTE BACKEND FOR TERRAFORM STATE
     - aws_s3_bucket_public_access_block
     - aws_dynamodb_table
 
-This will deploy an S3 bucket and a DynamoDB table, but your Terraform state will still be stored locally.
-To store this remotely in the S3 bucket with encryption and locking, add a backend configuration to the Terraform block.
+  *** This will deploy an S3 bucket and a DynamoDB table, but your Terraform state will still be stored locally ***
+  *** To store this remotely in the S3 with encryption and locking, add backend configuration to the Terraform block ***
 
 2. Configure the backend inside the Terraform block:
     ```
@@ -39,3 +39,16 @@ DELETING THE REMOTE BACKEND
 2. Run `terraform init` to copy the Terraform state back to local disk
 
 3. Run `terraform destroy` to delete the S3 bucket and DynamoDB table
+
+================================================================================================================================
+
+BACKEND PARTIAL CONFIGURATION
+
+Instead of entering `bucket`, `region`, `dynamodb_table` and `encrypt` in the backend block every time, store this in backend.hcl
+
+Must run `terraform init` command with the `-backend-config` argument:
+
+  `terraform init -backend-config=backend.hcl`
+
+Note that a unique `key` value must be manually set inside the backend block every time
+

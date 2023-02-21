@@ -2,6 +2,19 @@ provider "aws" {
   region = "us-east-2"
 }
 
+##### TERRAFORM BLOCK #####
+
+# Defining a backend configuration to the Terraform block
+terraform {
+  backend "s3" {
+    bucket = "terraform-up-and-running-follow-along-state"
+    region = "us-east-2"
+    dynamodb_table = "terraform-up-and-running-locks"
+    key = "global/s3/terraform.tfstate" # Filepath within the S3 bucket where the Terraform state file should be written; must be unique for every Terraform module deployed
+    encrypt = true # We enabled this in the S3 bucket itself, but this is a second layer to ensure data is always encrypted
+  }
+}
+
 ##### S3 BUCKET #####
 
 # Remote backend using S3 bucket

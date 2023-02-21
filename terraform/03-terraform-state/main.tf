@@ -6,16 +6,16 @@ provider "aws" {
 
 # Defining a backend configuration to the Terraform block
 terraform {
-  backend "s3" {
+ # backend "s3" {
     ### Since bucket, region, dynamodb_table, and encrypt will be reused, we can store this in backend.hcl
     ### Must run `terraform init -backend-config=backend.hcl`
       # bucket = "terraform-up-and-running-follow-along-state"
       # region = "us-east-2"
       # dynamodb_table = "terraform-up-and-running-locks"
       # encrypt = true # We enabled this in the S3 bucket itself, but this is a second layer to ensure data is always encrypted
-    key = "global/s3/terraform.tfstate" # Filepath within the S3 bucket where the Terraform state file should be written; must be unique for every Terraform module deployed
+ #   key = "global/s3/terraform.tfstate" # Filepath within the S3 bucket where the Terraform state file should be written; must be unique for every Terraform module deployed
 
-  }
+ # }
 }
 
 ##### S3 BUCKET #####
@@ -24,9 +24,12 @@ terraform {
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "terraform-up-and-running-follow-along-state"
 
+  # Adding this for the destroy step
+  force_destroy = true
+  
   # Prevent accidental deletion of this S3 bucket
   lifecycle {
-    prevent_destroy = true
+  #  prevent_destroy = true
   }
 }
 

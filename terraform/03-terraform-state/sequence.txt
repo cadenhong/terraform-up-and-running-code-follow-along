@@ -38,7 +38,13 @@ DELETING THE REMOTE BACKEND
 
 2. Run `terraform init` to copy the Terraform state back to local disk
 
-3. Run `terraform destroy` to delete the S3 bucket and DynamoDB table
+3. To ensure the S3 gets deleted even if there's content inside, edit the `aws_s3_bucket` block:
+    - `prevent_destroy = false`
+    - `force_destroy = true`
+
+4. Run `terraform apply` to set the configuration
+
+5. Run `terraform destroy` to delete the S3 bucket and DynamoDB table
 
 ================================================================================================================================
 

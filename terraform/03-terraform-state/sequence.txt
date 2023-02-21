@@ -1,0 +1,8 @@
+Configuring a Remote Backend for Terraform State
+
+1. Run `terraform apply` on the following resources:
+    - aws_s3_bucket
+    - aws_s3_bucket_versioning
+    - aws_s3_bucket_server_side_encryption_configuration
+    - aws_s3_bucket_public_access_block
+    - aws_dynamodb_table

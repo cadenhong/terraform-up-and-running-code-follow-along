@@ -3,13 +3,13 @@ provider "aws" {
 }
 
 terraform {
-  # backend "s3" {
-  #     bucket = "terraform-up-and-running-follow-along-state"
-  #     region = "us-east-2"
-  #     dynamodb_table = "terraform-up-and-running-locks"
-  #     encrypt = true # We enabled this in the S3 bucket itself, but this is a second layer to ensure data is always encrypted
-  #     key = "stage/services/webserver-cluster/terraform.tfstate" # Same folder path as the web server Terraform code
-  # }
+  backend "s3" {
+      bucket = "terraform-up-and-running-follow-along-state"
+      region = "us-east-2"
+      dynamodb_table = "terraform-up-and-running-locks"
+      encrypt = true # We enabled this in the S3 bucket itself, but this is a second layer to ensure data is always encrypted
+      key = "stage/services/webserver-cluster/terraform.tfstate" # Same folder path as the web server Terraform code
+  }
 }
 
 # Security Group for EC2 created

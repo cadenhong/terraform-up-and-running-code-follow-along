@@ -33,11 +33,28 @@ resource "aws_launch_configuration" "example" {
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instance.id] # Equivalent to aws_instance.example.vpc_security_group_ids
 
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p ${var.server_port} &
-              EOF
+  ## Original User Data Script:
+  # user_data = <<-EOF
+  #             #!/bin/bash
+  #             echo "Hello, World" > index.html
+  #             nohup busybox httpd -f -p ${var.server_port} &
+  #             EOF
+
+  ## User Data with terraform_remote_state data source:
+  # user_data = <<EOF
+  #             #!/bin/bash
+  #             echo "Hello, World" >> index.html
+  #             echo "${data.terraform_remote_state.db.outputs.address}" >> index.html
+  #             echo "${data.terraform_remote_state.db.outputs.port}" >> index.html
+  #             nohup busybox httpd -f -p ${var.server_port} &
+  #             EOF
+
+  ## User Data using the `templatefile` function and passing variables it needs to map:
+  user_data = templatefile("user-data.sh", {
+    server_port = var.server_port
+    db_address  = data.terraform_remote_state.db.outputs.address
+    db_port     = data.terraform_remote_state.db.outputs.port
+  })
 
   lifecycle {
     create_before_destroy = true # Required when using launch configuration with ASG for replacement EC2 to be made before destroying old ones
@@ -76,6 +93,20 @@ data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
+  }
+}
+
+# Data source to look up outputs from the database's state file -
+# It will configure the webserver cluster code to read the state file from the
+# same S3 bucket and folder where the database stores its state
+# Retrieve information using `data.terraform_remote_state.<NAME>.outputs.<ATTRIBUTE>`
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    bucket = "terraform-up-and-running-follow-along-state"
+    key = "stage/data-stores/mysql/terraform.tfstate"
+    region = "us-east-2"
   }
 }
 

@@ -1,0 +1,9 @@
+Pass the database username and password using environment variables:
+
+```
+export TF_VAR_db_username="(YOUR_DB_USERNAME)"
+export TF_VAR_db_password="(YOUR_DB_PASSWORD)"
+```
+
+* For each input variable `foo` defined in the configurations, provide Terraform the value by using `TF_VAR_foo`
+

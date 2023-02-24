@@ -1,0 +1,18 @@
+An environment for pre-production workloads (i.e., testing)
+
+Typical components include:
+- vpc: The network topology for this environment.
+- services: The apps or microservices to run in this environment, such as a Ruby on Rails frontend or a Scala backend. Each app could even live in its own folder to isolate it from all the other apps.
+- data-storage: The data stores to run in this environment, such as MySQL or Redis. Each data store could even reside in its own folder to isolate it from all other data stores.
+
+Inside each component, actual Terraform configuration files are organized as such:
+- variables.tf: Input variables
+- outputs.tf: Output variables
+- main.tf: Resources and data sources
+
+(From blog post by Yevgeniy Brikman)
+
+==============================================================================================================================================================================================================
+
+In the stage folder, we're adding the configuration files from ../../../02-intro-to-terraform/webserver-cluster/
+In the global folder, we're adding the S3 bucket created from the remote backend lesson

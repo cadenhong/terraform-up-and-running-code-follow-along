@@ -1,0 +1,6 @@
+A place to put resources that are used across all environments (e.g., S3, IAM)
+
+==============================================================================================================================================================================================================
+
+In the stage folder, we're adding the configuration files from ../../../02-intro-to-terraform/webserver-cluster/
+In the global folder, we're adding the S3 bucket created from the remote backend lesson

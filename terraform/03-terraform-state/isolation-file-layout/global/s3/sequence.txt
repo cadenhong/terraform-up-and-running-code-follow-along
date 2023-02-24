@@ -1,0 +1,60 @@
+CONFIGURING A REMOTE BACKEND FOR TERRAFORM STATE
+
+*** Sharing a single S3 bucket and DynamoDB across all Terraform code is possible ***
+
+1. Run `terraform apply` on the following resources:
+    - aws_s3_bucket
+    - aws_s3_bucket_versioning
+    - aws_s3_bucket_server_side_encryption_configuration
+    - aws_s3_bucket_public_access_block
+    - aws_dynamodb_table
+
+  *** This will deploy an S3 bucket and a DynamoDB table, but your Terraform state will still be stored locally ***
+  *** To store this remotely in the S3 with encryption and locking, add backend configuration to the Terraform block ***
+
+2. Configure the backend inside the Terraform block:
+    ```
+    terraform {
+      backend "s3" {
+        bucket = "terraform-up-and-running-follow-along-state"
+        key = "global/s3/terraform.tfstate"
+        region = "us-east-2"
+
+        dynamodb_table = "terraform-up-and-running-locks"
+        encrypt = true
+      }
+    }
+    ```
+
+3. Run the `terraform init` command to configure the Terraform backend
+
+4. To test it's working: add outputs.tf to return some output variables, then run `terraform apply`
+
+================================================================================================================================
+
+DELETING THE REMOTE BACKEND
+
+1. Remove the backend configuration in the Terraform block
+
+2. Run `terraform init` to copy the Terraform state back to local disk
+
+3. To ensure the S3 gets deleted even if there's content inside, edit the `aws_s3_bucket` block:
+    - `prevent_destroy = false`
+    - `force_destroy = true`
+
+4. Run `terraform apply` to set the configuration
+
+5. Run `terraform destroy` to delete the S3 bucket and DynamoDB table
+
+================================================================================================================================
+
+BACKEND PARTIAL CONFIGURATION
+
+Instead of entering `bucket`, `region`, `dynamodb_table` and `encrypt` in the backend block every time, store this in backend.hcl
+
+Must run `terraform init` command with the `-backend-config` argument:
+
+  `terraform init -backend-config=backend.hcl`
+
+Note that a unique `key` value must be manually set inside the backend block every time
+
